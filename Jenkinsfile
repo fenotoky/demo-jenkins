@@ -39,9 +39,17 @@ pipeline {
         }
 
         stage('Docker Push') {
-            steps {
-                bat 'docker push fenotokyrak/demo-jenkins:1.0'
-            }
+    steps {
+        withCredentials([usernamePassword(
+            credentialsId: 'dockerhub-credentials',
+            usernameVariable: 'DOCKER_USER',
+            passwordVariable: 'DOCKER_PASS'
+        )]) {
+
+            bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
+            bat 'docker push fenotokyrak/demo-jenkins:1.0'
         }
+    }
+}
     }
 }
